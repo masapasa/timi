@@ -3,6 +3,8 @@ import pickle
 import numpy as np
 import streamlit as st
 import pandas as pd
+import matplotlib.pyplot as plt
+import shap
 def app():
     df = pd.read_csv("/home/aswin/Documents/house-prices-prediction-LGBM/data/house_price.csv")
 
@@ -41,6 +43,7 @@ def app():
     loaded_model = pickle.load(open(modelName, 'rb'))
 
     # STREAMLIT FRONTEND DEVELOPMENT
+    st.set_page_config(page_title="Prediction", page_icon="📈")
     st.title("House Prices Prediction")
     st.write("##### This is a simple model for house prices prediction.")
 
@@ -80,7 +83,23 @@ def app():
     st.markdown("------")
 
     st.write("###### Version: 1.0")
+    st.set_option('deprecation.showPyplotGlobalUse', False)
+    explainer = shap.TreeExplainer(loaded_model)
+    shap_values = explainer.shap_values(inputDf)
+    st.subheader('Variable Importance')
+
+    st.caption('Which variables did the model think are most important in determining sale price?')
+    plt.title('Feature importance based on SHAP values')
+    plot1 = shap.summary_plot(shap_values, inputDf, plot_type="bar")
+    st.pyplot(plot1, bbox_inches='tight')
+    st.write('---')
+
+    st.caption('How does each variable affect the house price?')
+    plt.title('Variable Impact on Predicted House Value')
+    plot2 = shap.summary_plot(shap_values, inputDf)
+    st.pyplot(plot2, bbox_inches='tight')
+    st.write('---')
+        
     
-st.set_page_config(page_title="Prediction", page_icon="📈")
 
 app()

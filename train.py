@@ -96,3 +96,14 @@ msle_test =metrics.mean_squared_log_error(y_test, pred_y_test)
 print(f"Train r2 = {r2_train:.2f} \nTest r2 = {r2_test:.2f}")
 print(f"Train msle = {msle_train:.2f} \nTest msle = {msle_test:.2f}")
 # %%
+import pickle
+load_model = pickle.load(open("trained_model.model", 'rb'))
+# %%
+import shap
+explainer = shap.TreeExplainer(load_model)
+shap_values = explainer.shap_values(inputDf)
+# %%
+import matplotlib.pyplot as plt
+plot1 = shap.summary_plot(shap_values, inputDf, plot_type="bar")
+plot1
+# %%
