@@ -5,8 +5,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
 # %%
-df = pd.read_csv("/home/aswin/Documents/timi/house_price.csv")
+df = pd.read_csv("house_price.csv")
 df
+
 # %%
 dropColumns = ["Id", "MSSubClass", "MSZoning", "Street", "LandContour", "Utilities", "LandSlope", "Condition1", "Condition2", "BldgType", "OverallCond", "RoofStyle", 
                "RoofMatl", "Exterior1st", "Exterior2nd","MasVnrType", "ExterCond", "Foundation", "BsmtCond", "BsmtExposure", "BsmtFinType1",
@@ -14,6 +15,8 @@ dropColumns = ["Id", "MSSubClass", "MSZoning", "Street", "LandContour", "Utiliti
 
 droppedDf = df.drop(columns=dropColumns, axis=1)
 droppedDf.head()
+#%%
+len(dropColumns)
 # %%
 col_list=droppedDf.columns.tolist()
 
@@ -29,6 +32,8 @@ def splitCategoricalAndNumericalData(col_list: list):
 
 cat_cols, num_cols = splitCategoricalAndNumericalData(col_list) 
 cat_cols, num_cols
+#%%
+cat_cols.
 # %%
 droppedDf["Alley"].fillna("NO", inplace=True)
 droppedDf["Alley"].isna().sum()
@@ -56,6 +61,28 @@ for i in inputDf:
     elif inputDf[i].dtype == "int64" or inputDf[i].dtype == "float64":
         inputDf[i] = droppedDf[i].mean()
 inputDf
+
+obj_feat = list(inputDf.loc[:, inputDf.dtypes == 'object'].columns.values)
+for feature in obj_feat:
+    inputDf[feature] = inputDf[feature].astype('category')
+#%%
+import pickle
+loaded_model = pickle.load(open("trained_model.model", 'rb'))
+featureImportances = pd.Series(loaded_model.feature_importances_,index = droppedDf.columns).sort_values(ascending=False)[:20]
+    
+inputDict = dict(inputDf)
+
+for idx, i in enumerate(featureImportances.index):
+    if droppedDf[i].dtype == "object":
+        variables = droppedDf[i].drop_duplicates().to_list()
+        inputDict[i] = expander.selectbox(i, options=variables, key=idx)
+    elif droppedDf[i].dtype == "int64" or droppedDf[i].dtype == "float64":
+        inputDict[i] = expander.slider(i, ceil(droppedDf[i].min()),
+                                            floor(droppedDf[i].max()), int(droppedDf[i].mean()), key=idx)
+    else:
+        expander.write(i)
+for key, value in inputDict.items():
+    inputDf[key] = value
 
 obj_feat = list(inputDf.loc[:, inputDf.dtypes == 'object'].columns.values)
 for feature in obj_feat:

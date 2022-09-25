@@ -1,3 +1,4 @@
+
 from math import ceil, floor
 import pickle
 import numpy as np
@@ -37,7 +38,28 @@ def app():
     obj_feat = list(inputDf.loc[:, inputDf.dtypes == 'object'].columns.values)
     for feature in obj_feat:
         inputDf[feature] = inputDf[feature].astype('category')
-
+    description_list = [
+    'Total Area',
+    'Above grade (ground) living area square feet?',
+    'Basement Area',
+    'Lot frontage square feet',
+    'Total square feet of basement area',
+    'Neighborhood',
+    'Frst floor area',
+    'Garage area',
+    'Masonry veneer square feet',
+    'Overall quality',
+    'Year remodeled',
+    'Second floor area',
+    'Masonry veneer size',
+    'Garage year built',
+    'year built',
+    'fireplaces',
+    'Toral rooms above grade',
+    'Exterior quality'
+    'Cars in garage',
+    'House style'
+    ]
     # load the model weights and predict the target
     modelName = "trained_model.model"
     loaded_model = pickle.load(open(modelName, 'rb'))
@@ -67,8 +89,6 @@ def app():
                                                 floor(droppedDf[i].max()), int(droppedDf[i].mean()), key=idx)
         else:
             expander.write(i)
-
-
     for key, value in inputDict.items():
         inputDf[key] = value
 
