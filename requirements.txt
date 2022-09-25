@@ -6,3 +6,4 @@ streamlit
 tensorflow
 tensorflow_probability
 click==8.0.4
+shap
