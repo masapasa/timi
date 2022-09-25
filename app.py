@@ -6,7 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import shap
 def app():
-    df = pd.read_csv("/home/aswin/Documents/house-prices-prediction-LGBM/data/house_price.csv")
+    df = pd.read_csv("house_price.csv")
 
     dropColumns = ["Id", "MSSubClass", "MSZoning", "Street", "LandContour", "Utilities", "LandSlope", "Condition1", "Condition2", "BldgType", "OverallCond", "RoofStyle",
                 "RoofMatl", "Exterior1st", "Exterior2nd", "MasVnrType", "ExterCond", "Foundation", "BsmtCond", "BsmtExposure", "BsmtFinType1",
@@ -39,7 +39,7 @@ def app():
         inputDf[feature] = inputDf[feature].astype('category')
 
     # load the model weights and predict the target
-    modelName = "/home/aswin/Documents/house-prices-prediction-LGBM/trained_model.model"
+    modelName = "trained_model.model"
     loaded_model = pickle.load(open(modelName, 'rb'))
 
     # STREAMLIT FRONTEND DEVELOPMENT
